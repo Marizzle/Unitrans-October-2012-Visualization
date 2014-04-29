@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unitrans October 2012 Visualization</title>
+
+
+    <!-- Google Maps -->
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+
+    <!-- Latest compiled and minified D3 -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="bootstrap-select.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="bootstrap.js"></script>
+
+
+    <link rel="stylesheet" href="jquery.ferro.ferroMenu.css">
+
+    <link rel="stylesheet" href="iThing-min.css" type="text/css" />
+
+
+    <!-- jQuery compiled and minified -->
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+    <!-- FerroMenu --->
+    <script src="jquery.ferro.ferroMenu-1.2.2.min.js"></script>
+
+    <!-- Date Range Slider -->
+    <script src="jQDateRangeSlider-withRuler-min.js"></script>
+
+
+
+
+    <!-- Multi Select -->
+    <link rel="stylesheet" href="ui.multiselect.css">
+
+
+    <script src="ui.multiselect.js"></script>
+
+
+    <!--- Reveal Modal -->
+
+    <link rel="stylesheet" href="reveal.css">
+
+    <script src="jquery.reveal.js" type="text/javascript"></script>
+
+    <!--- d3 tip -->
+    <script src="d3.tip.js"></script>
+
+
+    <!-- timepicker -->
+    <link rel="stylesheet" href="jquery.timepicker.css"/>
+    <script src="jquery.timepicker.min.js"></script>
+
+    <style>
+
+        body {background-color:#f5f5f5}
+
+
+        rect.boarding {
+            fill: darkseagreen;
+        }
+
+        rect.boarding:hover{
+            fill: lightgreen;
+        }
+        rect.deboarding{
+            fill: crimson;
+        }
+        rect.deboarding:hover{
+            fill: lightcoral;
+        }
+
+        .contained {
+            border: solid red 5px;
+            overflow: auto;
+            height: 70%;
+        }
+
+        .outer {
+            height: 75vh;
+            overflow: auto;
+        }
+
+
+        svg{
+            display: block;
+        }
+
+
+        #A{
+            opacity:0.7;
+        }
+        #B{
+            opacity:0.7;
+        }
+        #C{
+            opacity:0.7;
+        }
+        #D{
+            opacity:0.7;
+        }
+        #E{
+            opacity:0.7;
+        }
+        #F{
+            opacity:0.7;
+        }
+        #G{
+            opacity:0.7;
+        }
+        #J{
+            opacity:0.7;
+        }
+        #K{
+            opacity:0.7;
+        }
+        #L{
+            opacity:0.7;
+        }
+        #M{
+            opacity:0.7;
+        }
+        #O{
+            opacity:0.7;
+        }
+        #P{
+            opacity:0.7;
+        }
+        #Q{
+            opacity:0.7;
+        }
+        #S{
+            opacity:0.7;
+        }
+        #T{
+            opacity:0.7;
+        }
+        #V{
+            opacity:0.7;
+        }
+        #W{
+            opacity:0.7;
+        }
+        #Tot{
+            opacity:0.7;
+        }
+
+
+        .ui-rangeSlider-bar{
+            background-color: #1abc9c
+        }
+
+
+        .d3-tip {
+            line-height: 1;
+            font-weight: bold;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 2px;
+        }
+
+            /* Creates a small triangle extender for the tooltip */
+        .d3-tip:after {
+            box-sizing: border-box;
+            display: inline;
+            font-size: 10px;
+            width: 100%;
+            line-height: 1;
+            color: rgba(0, 0, 0, 0.8);
+            content: "\25BC";
+            position: absolute;
+            text-align: center;
+        }
+
+            /* Style northward tooltips differently */
+        .d3-tip.n:after {
+            margin: -1px 0 0 0;
+            top: 100%;
+            left: 0;
+        }
+
+
+
+    </style>
+
+
+
+
+
+    <style>
+    html,
+    body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+        -webkit-font-smoothing: antialiased;
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    .row {
+        margin-left:0px;
+        margin-right:0px;
+    }
+
+        /* Wrapper for page content to push down footer */
+    #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by its height */
+        /* Pad bottom by footer height */
+        padding: 0 0 0px;
+    }
+
+
+
+    #wrap > .container {
+        padding: 0px 15px 0;
+    }
+
+    #footer a {
+        color:#efefef;
+    }
+
+    header {
+        background: #333;
+        color:#555;
+    }
+
+    header .dropdown-menu {
+        top:74px;
+        background: #ffcc33;
+        border-width:0;
+    }
+
+    h1 {
+        font-size:50px;
+    }
+
+    #navv {
+        width: 100%;
+        position:static;
+        top:-32px;
+    }
+
+    #navv.affix {
+        position: fixed;
+        top: 0;
+        z-index:10;
+        -webkit-transition: all .6s ease-in-out;
+    }
+
+    #footer > .container {
+
+    }
+
+    @media (min-width: 767px) {
+        .navbar-nav.nav-justified > li{
+            float:none;
+        }
+    }
+
+    .navbar-custom {
+        background-color: #2e2e2e;
+        font-weight:700;
+        text-transform:uppercase;
+        border-width:0;
+        min-height: 50px;
+        height: 50px;
+    }
+    .navbar-custom  .navbar-nav>li>a {
+        color: #ddd;
+    }
+    .navbar-custom  .dropdown-menu li>a:hover {
+        color: #eee;
+    }
+    .navbar-custom  .navbar-nav li>a:hover, .navbar-nav li .open, .navbar-custom .navbar-nav .active a  {
+        background-color: #000;
+    }
+    .navbar-custom .navbar-nav>.dropdown>a .caret {
+        border-top-color: #999;
+        border-bottom-color: #999;
+    }
+
+
+
+
+    .panel {
+        border-width:0;
+    }
+
+    @media (max-width: 768px) {
+        header {
+
+        }
+    }
+
+    </style>
+</head>
+<body>
+
+<!-- Wrap all page content here -->
+<div id="wrap">
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-custom navbar-inverse navbar-static-top" id="navv">
+        <div class="container">
+            <div class="navbar-header">
+                <h4 style="color: white">Unitrans Stop Visualization<small>(October 2012) Mario Yepez</small></h4>
+            </div>
+        </div><!--/.container -->
+    </div><!--/.navbar -->
+
+
+
+    <ul id="nav">
+        <li><a id="A" href="#" onclick="toggleRoute('A')">A</a></li>
+        <li><a id="B" href="#" onclick="toggleRoute('B')">B</a></li>
+        <li><a id="C" href="#" onclick="toggleRoute('C')">C</a></li>
+        <li><a id="D" href="#" onclick="toggleRoute('D')">D</a></li>
+        <li><a id="E" href="#" onclick="toggleRoute('E')">E</a></li>
+        <li><a id="F" href="#" onclick="toggleRoute('F')">F</a></li>
+        <li><a id="G" href="#" onclick="toggleRoute('G')">G</a></li>
+        <li><a id="J" href="#" onclick="toggleRoute('J')">J</a></li>
+        <li><a id="K" href="#" onclick="toggleRoute('K')">K</a></li>
+        <li><a id="L" href="#" onclick="toggleRoute('L')">L</a></li>
+        <li><a id="M" href="#" onclick="toggleRoute('M')">M</a></li>
+        <li><a id="O" href="#" onclick="toggleRoute('O')">O</a></li>
+        <li><a id="P" href="#" onclick="toggleRoute('P')">P</a></li>
+        <li><a id="Q" href="#" onclick="toggleRoute('Q')">Q</a></li>
+        <li><a id="S" href="#" onclick="toggleRoute('S')">S</a></li>
+        <li><a id="T" href="#" onclick="toggleRoute('T')">T</a></li>
+        <li><a id="V" href="#" onclick="toggleRoute('V')">V</a></li>
+        <li><a id="W" href="#" onclick="toggleRoute('W')">W</a></li>
+        <li><a id="Tot" href="#" onclick="toggleRoute('Tot')">Tot</a></li>
+    </ul>
+
+
+
+    <div class="container">
+
+
+        <div class="row">
+
+            <div class="outer col-sm-7 col-sm-offset-1">
+
+                <div class="inner" id="viz">
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Bus Stops</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>Modify the Stops which will be rendered here!</p>
+                        <a class="btn btn-default" href="#" data-reveal-id="myModal">Select Stops to Render</a>
+                    </div>
+                </div>
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Time Range</h3>
+                    </div>
+                    <div class="panel-body">
+                        Start: <input id="startTime" type="text" class="time" />
+                        <br>
+                        Stop: <input id="endTime" type="text" class="time" />
+                        <script>
+
+
+                            $('#startTime').timepicker({ 'timeFormat': 'H:i:s','step': 60 });
+
+
+                            $('#endTime').timepicker({ 'timeFormat': 'H:i:s','step': 60 });
+
+                        </script>
+                    </div>
+                </div>
+
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Day of the Week</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>Select the Days of the Week to Visualize</p>
+                        <div class="checkbox">
+                            <label>
+                                <input checked="checked" id="monday" type="checkbox"> Monday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input checked="checked" id="tuesday" type="checkbox"> Tuesday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input checked="checked" id="wednesday" type="checkbox"> Wednesday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input checked="checked" id="thursday" type="checkbox"> Thursday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input checked="checked" id="friday" type="checkbox"> Friday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input checked="checked" id="saturday" type="checkbox"> Saturday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input checked="checked" id="sunday" type="checkbox"> Sunday
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-sm-7 col-sm-offset-1">
+            <div id="slider"></div>
+            <button type="button" id="render" class="btn btn-primary" onclick="updateVis()">Update</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="myModal" class="reveal-modal xlarge">
+<h1>Select Routes</h1>
+<p>Toggle Stops On and Off.</p>
+
+
+<select id="routeSels" class="multiselect" multiple="multiple" style="width:700px; height:400px; name="countries[]">
+<option value="14th St & B St (EB)">14th St & B St (EB)</option>
+<option value="14th St & B St (WB)">14th St & B St (WB)</option>
+<option value="14th St & Davis HS (WB)">14th St & Davis HS (WB)</option>
+<option value="14th St & F St (WB)">14th St & F St (WB)</option>
+<option value="14th St & Oak St (EB)">14th St & Oak St (EB)</option>
+<option value="14th St & Oak St (WB)">14th St & Oak St (WB)</option>
+<option value="1st St & C St (EB)">1st St & C St (EB)</option>
+<option value="1st St & D St (WB)">1st St & D St (WB)</option>
+<option value="2nd St & B St (EB)">2nd St & B St (EB)</option>
+<option value="2nd St & E St (EB)">2nd St & E St (EB)</option>
+<option value="2nd St & E St (WB)">2nd St & E St (WB)</option>
+<option value="2nd St. & Target Drive (WB)">2nd St. & Target Drive (WB)</option>
+<option value="3rd St & C St (EB)">3rd St & C St (EB)</option>
+<option value="3rd St & C St (WB)">3rd St & C St (WB)</option>
+<option value="3rd St & E St (EB)">3rd St & E St (EB)</option>
+<option value="3rd St & E St (WB)">3rd St & E St (WB)</option>
+<option value="3rd St & K St (EB)">3rd St & K St (EB)</option>
+<option value="3rd St & K St (WB)">3rd St & K St (WB)</option>
+<option value="5th St & Alhambra Dr (SB)">5th St & Alhambra Dr (SB)</option>
+<option value="5th St & Arroyo Ave (EB)">5th St & Arroyo Ave (EB)</option>
+<option value="5th St & Cantrill  (EB)">5th St & Cantrill  (EB)</option>
+<option value="5th St & Cantrill (WB)">5th St & Cantrill (WB)</option>
+<option value="5th St & D St (EB)">5th St & D St (EB)</option>
+<option value="5th St & D St (WB)">5th St & D St (WB)</option>
+<option value="5th St & Davis PW Corp Yard (WB)">5th St & Davis PW Corp Yard (WB)</option>
+<option value="5th St & G St (EB)">5th St & G St (EB)</option>
+<option value="5th St & I St (WB)">5th St & I St (WB)</option>
+<option value="5th St & Pelz Bike Path Tunnel (WB)">5th St & Pelz Bike Path Tunnel (WB)</option>
+<option value="5th St & Pena Dr (EB)">5th St & Pena Dr (EB)</option>
+<option value="5th St & Pole Line Rd (EB)">5th St & Pole Line Rd (EB)</option>
+<option value="5th St & Pole Line Rd (WB)">5th St & Pole Line Rd (WB)</option>
+<option value="5th St & San Rafael St (WB)">5th St & San Rafael St (WB)</option>
+<option value="5th St & San Sebastian St (WB)">5th St & San Sebastian St (WB)</option>
+<option value="5th St & Spafford St (EB)">5th St & Spafford St (EB)</option>
+<option value="8th St & Chestnut Ln (EB)">8th St & Chestnut Ln (EB)</option>
+<option value="8th St & Chestnut Ln (WB)">8th St & Chestnut Ln (WB)</option>
+<option value="8th St & D St (EB)">8th St & D St (EB)</option>
+<option value="8th St & D St (WB)">8th St & D St (WB)</option>
+<option value="8th St & G St (EB)">8th St & G St (EB)</option>
+<option value="8th St & G St (WB)">8th St & G St (WB)</option>
+<option value="8th St & J St (EB)">8th St & J St (EB)</option>
+<option value="8th St & J St (WB)">8th St & J St (WB)</option>
+<option value="8th St & L St (EB)">8th St & L St (EB)</option>
+<option value="8th St & L St (WB)">8th St & L St (WB)</option>
+<option value="8th St & Sycamore Ln (WB)">8th St & Sycamore Ln (WB)</option>
+<option value="A St & Hutchison (SB)">A St & Hutchison (SB)</option>
+<option value="Adams St & 720 Adams St (NB)">Adams St & 720 Adams St (NB)</option>
+<option value="Alhambra & 5th/Verona (SB)">Alhambra & 5th/Verona (SB)</option>
+<option value="Alhambra Dr & 5th St (EB)">Alhambra Dr & 5th St (EB)</option>
+<option value="Alhambra Dr & 5th St (WB)">Alhambra Dr & 5th St (WB)</option>
+<option value="Alhambra Dr & Arroyo Ave (EB)">Alhambra Dr & Arroyo Ave (EB)</option>
+<option value="Alhambra Dr & Caceres Ct (WB)">Alhambra Dr & Caceres Ct (WB)</option>
+<option value="Alhambra Dr & Loyola Dr (EB)">Alhambra Dr & Loyola Dr (EB)</option>
+<option value="Alhambra Dr & Loyola Dr (WB)">Alhambra Dr & Loyola Dr (WB)</option>
+<option value="Alhambra Dr & Mace Blvd (EB)">Alhambra Dr & Mace Blvd (EB)</option>
+<option value="Alhambra Dr & Mace Blvd (WB)">Alhambra Dr & Mace Blvd (WB)</option>
+<option value="Almond Ln & Deodara St (WB)">Almond Ln & Deodara St (WB)</option>
+<option value="Almond Ln & Meadowbrook Dr (EB)">Almond Ln & Meadowbrook Dr (EB)</option>
+<option value="Almond Ln & Meadowbrook Dr (WB)">Almond Ln & Meadowbrook Dr (WB)</option>
+<option value="Alvarado Ave & Anderson (EB)">Alvarado Ave & Anderson (EB)</option>
+<option value="Alvarado Ave & Anderson (WB)">Alvarado Ave & Anderson (WB)</option>
+<option value="Alvarado Ave & Del Rey Ct (EB)">Alvarado Ave & Del Rey Ct (EB)</option>
+<option value="Alvarado Ave & Sycamore (EB)">Alvarado Ave & Sycamore (EB)</option>
+<option value="Alvarado Ave & Sycamore (WB)">Alvarado Ave & Sycamore (WB)</option>
+<option value="Anderson Rd & Alvarado Ave (SB)">Anderson Rd & Alvarado Ave (SB)</option>
+<option value="Anderson Rd & Amherst Dr (NB)">Anderson Rd & Amherst Dr (NB)</option>
+<option value="Anderson Rd & Amherst Dr (SB)">Anderson Rd & Amherst Dr (SB)</option>
+<option value="Anderson Rd & Hanover Dr (NB)">Anderson Rd & Hanover Dr (NB)</option>
+<option value="Anderson Rd & Hanover Dr (SB)">Anderson Rd & Hanover Dr (SB)</option>
+<option value="Anderson Rd & Russell Blvd (NB)">Anderson Rd & Russell Blvd (NB)</option>
+<option value="Anderson Rd & Russell Blvd (SB)">Anderson Rd & Russell Blvd (SB)</option>
+<option value="Anderson Rd & Valencia Ave (SB)">Anderson Rd & Valencia Ave (SB)</option>
+<option value="Anderson Rd & Villanova Dr (NB)">Anderson Rd & Villanova Dr (NB)</option>
+<option value="Anderson Rd & Villanova Dr (SB)">Anderson Rd & Villanova Dr (SB)</option>
+<option value="Arlington Blvd & Bucklebury Rd (NB)">Arlington Blvd & Bucklebury Rd (NB)</option>
+<option value="Arlington Blvd & Bucklebury Rd (SB)">Arlington Blvd & Bucklebury Rd (SB)</option>
+<option value="Arlington Blvd & Cabot St (NB)">Arlington Blvd & Cabot St (NB)</option>
+<option value="Arlington Blvd & Cabot St (SB)">Arlington Blvd & Cabot St (SB)</option>
+<option value="Arlington Blvd & Calaveras Ave (NB)">Arlington Blvd & Calaveras Ave (NB)</option>
+<option value="Arlington Blvd & Lake Blvd (NB)">Arlington Blvd & Lake Blvd (NB)</option>
+<option value="Arlington Blvd & Lake Blvd (SB)">Arlington Blvd & Lake Blvd (SB)</option>
+<option value="Arlington Blvd & Shasta Dr (NB)">Arlington Blvd & Shasta Dr (NB)</option>
+<option value="Arlington Blvd & Shasta Dr (SB)">Arlington Blvd & Shasta Dr (SB)</option>
+<option value="Arlington Blvd & Westernesse Rd (SB)">Arlington Blvd & Westernesse Rd (SB)</option>
+<option value="Arthur St & Alameda Ave (SB)">Arthur St & Alameda Ave (SB)</option>
+<option value="Arthur St & North Adams St (SB)">Arthur St & North Adams St (SB)</option>
+<option value="B St & 4th St  (SB)">B St & 4th St  (SB)</option>
+<option value="B St & 4th St (NB)">B St & 4th St (NB)</option>
+<option value="B St & 5th St (NB)">B St & 5th St (NB)</option>
+<option value="B St & 7th St (NB)">B St & 7th St (NB)</option>
+<option value="B St & 7th St (SB)">B St & 7th St (SB)</option>
+<option value="C St & 1st St (SB)">C St & 1st St (SB)</option>
+<option value="Catalina Dr & Alvarado Ave (NB)">Catalina Dr & Alvarado Ave (NB)</option>
+<option value="Catalina Dr & Cabrillo Ave (NB)">Catalina Dr & Cabrillo Ave (NB)</option>
+<option value="Catalina Dr & Corona Dr (WB)">Catalina Dr & Corona Dr (WB)</option>
+<option value="Catalina Dr & Grande Ave (NB)">Catalina Dr & Grande Ave (NB)</option>
+<option value="Chiles Rd & Mace Blvd (EB)">Chiles Rd & Mace Blvd (EB)</option>
+<option value="Covell Blvd & Alhambra Dr (EB)">Covell Blvd & Alhambra Dr (EB)</option>
+<option value="Covell Blvd & Denali Dr (EB)">Covell Blvd & Denali Dr (EB)</option>
+<option value="Covell Blvd & J St (EB)">Covell Blvd & J St (EB)</option>
+<option value="Covell Blvd & J St (WB)">Covell Blvd & J St (WB)</option>
+<option value="Covell Blvd & John Jones Rd (WB)">Covell Blvd & John Jones Rd (WB)</option>
+<option value="Covell Blvd & Mace Blvd (EB)">Covell Blvd & Mace Blvd (EB)</option>
+<option value="Covell Blvd & Pole Line Rd (EB)">Covell Blvd & Pole Line Rd (EB)</option>
+<option value="Covell Blvd & Pole Line Rd (WB)">Covell Blvd & Pole Line Rd (WB)</option>
+<option value="Covell Blvd & Shasta Dr (EB)">Covell Blvd & Shasta Dr (EB)</option>
+<option value="Covell Blvd & Shasta Dr (WB)">Covell Blvd & Shasta Dr (WB)</option>
+<option value="Covell Blvd & Sycamore Ln (EB)">Covell Blvd & Sycamore Ln (EB)</option>
+<option value="Covell Blvd & Sycamore Ln (WB)">Covell Blvd & Sycamore Ln (WB)</option>
+<option value="Covell Blvd & West Area Bike Path (EB)">Covell Blvd & West Area Bike Path (EB)</option>
+<option value="Covell Blvd & Wright Blvd (EB)">Covell Blvd & Wright Blvd (EB)</option>
+<option value="Covell Blvd & Wright Blvd (WB)">Covell Blvd & Wright Blvd (WB)</option>
+<option value="Cowell Blvd & Drew Ave (EB)">Cowell Blvd & Drew Ave (EB)</option>
+<option value="Cowell Blvd & Drew Ave (WB)">Cowell Blvd & Drew Ave (WB)</option>
+<option value="Cowell Blvd & Drummond Ave (EB)">Cowell Blvd & Drummond Ave (EB)</option>
+<option value="Cowell Blvd & El Cemonte Ave (EB)">Cowell Blvd & El Cemonte Ave (EB)</option>
+<option value="Cowell Blvd & El Cemonte Ave (WB)">Cowell Blvd & El Cemonte Ave (WB)</option>
+<option value="Cowell Blvd & Ensenada Dr (EB)">Cowell Blvd & Ensenada Dr (EB)</option>
+<option value="Cowell Blvd & Ensenada Dr (WB)">Cowell Blvd & Ensenada Dr (WB)</option>
+<option value="Cowell Blvd & Halsey Cir (WB)">Cowell Blvd & Halsey Cir (WB)</option>
+<option value="Cowell Blvd & La Vida (EB)">Cowell Blvd & La Vida (EB)</option>
+<option value="Cowell Blvd & La Vida Way (WB)">Cowell Blvd & La Vida Way (WB)</option>
+<option value="Cowell Blvd & Mace Blvd (WB)">Cowell Blvd & Mace Blvd (WB)</option>
+<option value="Cowell Blvd & Ohlone St (EB)">Cowell Blvd & Ohlone St (EB)</option>
+<option value="Cowell Blvd & Ohlone St (WB)">Cowell Blvd & Ohlone St (WB)</option>
+<option value="Cowell Blvd & Research Park S Dr (EB)">Cowell Blvd & Research Park S Dr (EB)</option>
+<option value="Cowell Blvd & Research Park S Dr (WB)">Cowell Blvd & Research Park S Dr (WB)</option>
+<option value="Cowell Blvd & Schmeiser Ave (EB)">Cowell Blvd & Schmeiser Ave (EB)</option>
+<option value="Cowell Blvd & Schmeiser Ave (WB)">Cowell Blvd & Schmeiser Ave (WB)</option>
+<option value="Cowell Blvd & Sunrise (WB)">Cowell Blvd & Sunrise (WB)</option>
+<option value="Cowell Blvd & Sunrise Ct (EB)">Cowell Blvd & Sunrise Ct (EB)</option>
+<option value="Cowell Blvd & Valdora St (EB)">Cowell Blvd & Valdora St (EB)</option>
+<option value="Cowell Blvd & Valdora St (WB)">Cowell Blvd & Valdora St (WB)</option>
+<option value="Dairy Road & Tercero (NB)">Dairy Road & Tercero (NB)</option>
+<option value="Danbury St & Drummond Ave (NB)">Danbury St & Drummond Ave (NB)</option>
+<option value="Danbury St & Drummond Ave (SB)">Danbury St & Drummond Ave (SB)</option>
+<option value="Danbury St & Lillard Dr (NB)">Danbury St & Lillard Dr (NB)</option>
+<option value="Drake Dr & Drake Dr  Apts (WB)">Drake Dr & Drake Dr  Apts (WB)</option>
+<option value="Drew & Research Park Drive (NB)">Drew & Research Park Drive (NB)</option>
+<option value="Drew Ave & Cowell Blvd (NB)">Drew Ave & Cowell Blvd (NB)</option>
+<option value="Drexel Dr & Hemlock Ln (EB)">Drexel Dr & Hemlock Ln (EB)</option>
+<option value="Drummond & Albany (NB)">Drummond & Albany (NB)</option>
+<option value="Drummond Ave & Cowell (SB)">Drummond Ave & Cowell (SB)</option>
+<option value="Drummond Ave & Lillard Dr (SB)">Drummond Ave & Lillard Dr (SB)</option>
+<option value="East 8th Street & Pole Line Road (WB)">East 8th Street & Pole Line Road (WB)</option>
+<option value="El Cemonte Ave & Glide Dr (SB)">El Cemonte Ave & Glide Dr (SB)</option>
+<option value="F St & 12th St (NB)">F St & 12th St (NB)</option>
+<option value="F St & 14th St (NB)">F St & 14th St (NB)</option>
+<option value="F St & 4th St  (NB)">F St & 4th St  (NB)</option>
+<option value="F St & 4th St  (SB)">F St & 4th St  (SB)</option>
+<option value="F St & 5th Street  (NB)">F St & 5th Street  (NB)</option>
+<option value="F St & 8th St  (SB)">F St & 8th St  (SB)</option>
+<option value="F St & 8th St (NB)">F St & 8th St (NB)</option>
+<option value="F St & Covell Blvd (NB)">F St & Covell Blvd (NB)</option>
+<option value="F St & Covell Blvd (SB)">F St & Covell Blvd (SB)</option>
+<option value="Glide Dr & El Cemonte Ave (EB)">Glide Dr & El Cemonte Ave (EB)</option>
+<option value="Glide Dr & Schmeiser Ave (EB)">Glide Dr & Schmeiser Ave (EB)</option>
+<option value="Glide Dr & Schmeiser Ave (WB)">Glide Dr & Schmeiser Ave (WB)</option>
+<option value="H St & Amtrak Station (NB)">H St & Amtrak Station (NB)</option>
+<option value="H St Alley & 2nd St (SB)">H St Alley & 2nd St (SB)</option>
+<option value="Hanover Dr & Anderson Rd (EB)">Hanover Dr & Anderson Rd (EB)</option>
+<option value="Hanover Dr & Scripps (NB)">Hanover Dr & Scripps (NB)</option>
+<option value="Health Sciences Dist Lot 56 &  (SB)">Health Sciences Dist Lot 56 &  (SB)</option>
+<option value="Humboldt Ave & Arlington Blvd (EB)">Humboldt Ave & Arlington Blvd (EB)</option>
+<option value="Humboldt Ave & Arthur St (EB)">Humboldt Ave & Arthur St (EB)</option>
+<option value="Humboldt Ave & Imperial  (EB)">Humboldt Ave & Imperial  (EB)</option>
+<option value="Hutchison & California (WB)">Hutchison & California (WB)</option>
+<option value="Hutchison & Sage (NB)">Hutchison & Sage (NB)</option>
+<option value="Hutchison & Sage (SB)">Hutchison & Sage (SB)</option>
+<option value="Hutchison & Shields Library (WB)">Hutchison & Shields Library (WB)</option>
+<option value="Hutchison Dr & A St (EB)">Hutchison Dr & A St (EB)</option>
+<option value="Hutchison Dr & Art Building (EB)">Hutchison Dr & Art Building (EB)</option>
+<option value="Hutchison Dr & Bioletti Way (EB)">Hutchison Dr & Bioletti Way (EB)</option>
+<option value="Hutchison Dr & Ext Center (WB)">Hutchison Dr & Ext Center (WB)</option>
+<option value="Hutchison Dr & Health Sci Dr (WB)">Hutchison Dr & Health Sci Dr (WB)</option>
+<option value="Hutchison Dr & Health Sci Drive (EB)">Hutchison Dr & Health Sci Drive (EB)</option>
+<option value="J St & 8th St (SB)">J St & 8th St (SB)</option>
+<option value="J St & Alice St (SB)">J St & Alice St (SB)</option>
+<option value="J St & Drexel Dr (SB)">J St & Drexel Dr (SB)</option>
+<option value="J St & Menlo Dr (SB)">J St & Menlo Dr (SB)</option>
+<option value="L St & 425 (SB)">L St & 425 (SB)</option>
+<option value="L St & 4th St (NB)">L St & 4th St (NB)</option>
+<option value="La Rue Rd & Garrod Dr (EB)">La Rue Rd & Garrod Dr (EB)</option>
+<option value="La Rue Rd & Hutchison (SB)">La Rue Rd & Hutchison (SB)</option>
+<option value="La Rue Rd & Orchard (NB)">La Rue Rd & Orchard (NB)</option>
+<option value="La Rue Rd & Orchard (SB)">La Rue Rd & Orchard (SB)</option>
+<option value="Lake Blvd & 1050 (NB)">Lake Blvd & 1050 (NB)</option>
+<option value="Lake Blvd & Covell Blvd (NB)">Lake Blvd & Covell Blvd (NB)</option>
+<option value="Lake Blvd & Covell Blvd (SB)">Lake Blvd & Covell Blvd (SB)</option>
+<option value="Lake Blvd & Oyster Bay (SB)">Lake Blvd & Oyster Bay (SB)</option>
+<option value="Lake Blvd & Portage Bay (NB)">Lake Blvd & Portage Bay (NB)</option>
+<option value="Lake Blvd & Salem Ave (NB)">Lake Blvd & Salem Ave (NB)</option>
+<option value="Lake Blvd & Wood Circle (NB)">Lake Blvd & Wood Circle (NB)</option>
+<option value="Lillard & Drummond (EB)">Lillard & Drummond (EB)</option>
+<option value="Lillard Dr & Cowell Blvd (EB)">Lillard Dr & Cowell Blvd (EB)</option>
+<option value="Lillard Dr & Evans Ct (EB)">Lillard Dr & Evans Ct (EB)</option>
+<option value="Lillard Dr & Evans Ct (WB)">Lillard Dr & Evans Ct (WB)</option>
+<option value="Lillard Dr & Farragut Cir (WB)">Lillard Dr & Farragut Cir (WB)</option>
+<option value="Loyola Dr & Nutmeg Ln (EB)">Loyola Dr & Nutmeg Ln (EB)</option>
+<option value="Loyola Dr & Nutmeg Ln (WB)">Loyola Dr & Nutmeg Ln (WB)</option>
+<option value="Loyola Dr & Regis Dr (WB)">Loyola Dr & Regis Dr (WB)</option>
+<option value="Loyola Dr & Whittier Dr (WB)">Loyola Dr & Whittier Dr (WB)</option>
+<option value="Mace Blvd & 2nd St (NB)">Mace Blvd & 2nd St (NB)</option>
+<option value="Mace Blvd & 2nd St (SB)">Mace Blvd & 2nd St (SB)</option>
+<option value="Mace Blvd & Chiles Rd (SB)">Mace Blvd & Chiles Rd (SB)</option>
+<option value="Mace Blvd & Cowell Blvd (NB)">Mace Blvd & Cowell Blvd (NB)</option>
+<option value="Mace Blvd & El Macero Dr (NB)">Mace Blvd & El Macero Dr (NB)</option>
+<option value="Mace Blvd & El Macero Dr (SB)">Mace Blvd & El Macero Dr (SB)</option>
+<option value="Mace Blvd & S El Macero Dr (NB)">Mace Blvd & S El Macero Dr (NB)</option>
+<option value="Mace Blvd & S El Macero Dr (SB)">Mace Blvd & S El Macero Dr (SB)</option>
+<option value="Memorial Union (B Line) & Howard Way (NB)">Memorial Union (B Line) & Howard Way (NB)</option>
+<option value="Memorial Union (E Line) & Howard Way (NB)">Memorial Union (E Line) & Howard Way (NB)</option>
+<option value="Memorial Union (F Line) & Howard Way (NB)">Memorial Union (F Line) & Howard Way (NB)</option>
+<option value="Memorial Union (G Line) & Howard Way (NB)">Memorial Union (G Line) & Howard Way (NB)</option>
+<option value="Memorial Union (K Line) & Howard Way (SB)">Memorial Union (K Line) & Howard Way (SB)</option>
+<option value="Memorial Union (M Line) & Howard Way (SB)">Memorial Union (M Line) & Howard Way (SB)</option>
+<option value="Memorial Union (P Line) & Howard Way (NB)">Memorial Union (P Line) & Howard Way (NB)</option>
+<option value="Memorial Union (Q Line) & Howard Way (NB)">Memorial Union (Q Line) & Howard Way (NB)</option>
+<option value="Memorial Union Terminal Arrival & Howard Way (NB)">Memorial Union Terminal Arrival & Howard Way (NB)</option>
+<option value="Monarch Ln & Campbell (SB)">Monarch Ln & Campbell (SB)</option>
+<option value="Moore Blvd & Pole Line Rd (EB)">Moore Blvd & Pole Line Rd (EB)</option>
+<option value="Moore Blvd & Raphael (EB)">Moore Blvd & Raphael (EB)</option>
+<option value="Moore Blvd & Rockwell (EB)">Moore Blvd & Rockwell (EB)</option>
+<option value="Moore Blvd & Wright Blvd (EB)">Moore Blvd & Wright Blvd (EB)</option>
+<option value="North Adams & Arthur (WB)">North Adams & Arthur (WB)</option>
+<option value="North Sycamore Loop &  (NB)">North Sycamore Loop &  (NB)</option>
+<option value="Oak Ave & 14th St (SB)">Oak Ave & 14th St (SB)</option>
+<option value="Oak Ave & 8th St (NB)">Oak Ave & 8th St (NB)</option>
+<option value="Oak Ave & 8th St (SB)">Oak Ave & 8th St (SB)</option>
+<option value="Oak Ave & Antioch Dr (NB)">Oak Ave & Antioch Dr (NB)</option>
+<option value="Oak Ave & Antioch Dr (SB)">Oak Ave & Antioch Dr (SB)</option>
+<option value="Oak Ave & Russell Blvd (NB)">Oak Ave & Russell Blvd (NB)</option>
+<option value="Oak Ave & Russell Blvd (SB)">Oak Ave & Russell Blvd (SB)</option>
+<option value="Oak Ave & Scripps  (SB)">Oak Ave & Scripps  (SB)</option>
+<option value="Pena  & 2nd St. (NB)">Pena  & 2nd St. (NB)</option>
+<option value="Pole Line & Donner (NB)">Pole Line & Donner (NB)</option>
+<option value="Pole Line & Wahl Way (SB)">Pole Line & Wahl Way (SB)</option>
+<option value="Pole Line Rd & 8th St (NB)">Pole Line Rd & 8th St (NB)</option>
+<option value="Pole Line Rd & Claremont Dr (NB)">Pole Line Rd & Claremont Dr (NB)</option>
+<option value="Pole Line Rd & Cowell Blvd (NB)">Pole Line Rd & Cowell Blvd (NB)</option>
+<option value="Pole Line Rd & Cowell Blvd (SB)">Pole Line Rd & Cowell Blvd (SB)</option>
+<option value="Pole Line Rd & Loyola Dr (NB)">Pole Line Rd & Loyola Dr (NB)</option>
+<option value="Pole Line Rd & Picasso Ave (NB)">Pole Line Rd & Picasso Ave (NB)</option>
+<option value="Radcliffe Dr & Apple Ln (NB)">Radcliffe Dr & Apple Ln (NB)</option>
+<option value="Richards Blvd & Olive Dr (NB)">Richards Blvd & Olive Dr (NB)</option>
+<option value="Richards Blvd & Olive Dr (SB)">Richards Blvd & Olive Dr (SB)</option>
+<option value="Rosario St & Almond Ln (NB)">Rosario St & Almond Ln (NB)</option>
+<option value="Rosario St & Montgomery Ave (NB)">Rosario St & Montgomery Ave (NB)</option>
+<option value="Russell Blvd & A St (WB)">Russell Blvd & A St (WB)</option>
+<option value="Russell Blvd & Arlington Farms (WB)">Russell Blvd & Arlington Farms (WB)</option>
+<option value="Russell Blvd & Arthur St (WB)">Russell Blvd & Arthur St (WB)</option>
+<option value="Russell Blvd & Sycamore Ln (EB)">Russell Blvd & Sycamore Ln (EB)</option>
+<option value="Russell Blvd & Sycamore Ln (WB)">Russell Blvd & Sycamore Ln (WB)</option>
+<option value="Silo Terminal & Center Island (EB)">Silo Terminal & Center Island (EB)</option>
+<option value="Silo Terminal & North Boarding Area (WB)">Silo Terminal & North Boarding Area (WB)</option>
+<option value="Sycamore & 8th (SB)">Sycamore & 8th (SB)</option>
+<option value="Sycamore Ln & 8th St (NB)">Sycamore Ln & 8th St (NB)</option>
+<option value="Sycamore Ln & Alvarado (SB)">Sycamore Ln & Alvarado (SB)</option>
+<option value="Sycamore Ln & Antelope (NB)">Sycamore Ln & Antelope (NB)</option>
+<option value="Sycamore Ln & Antelope (SB)">Sycamore Ln & Antelope (SB)</option>
+<option value="Sycamore Ln & Bucknell Dr (NB)">Sycamore Ln & Bucknell Dr (NB)</option>
+<option value="Sycamore Ln & Chaparral Apts (NB)">Sycamore Ln & Chaparral Apts (NB)</option>
+<option value="Sycamore Ln & Chaparral Apts (SB)">Sycamore Ln & Chaparral Apts (SB)</option>
+<option value="Sycamore Ln & Cornell Dr (NB)">Sycamore Ln & Cornell Dr (NB)</option>
+<option value="Sycamore Ln & Cornell Dr (SB)">Sycamore Ln & Cornell Dr (SB)</option>
+<option value="Sycamore Ln & Drake Dr (SB)">Sycamore Ln & Drake Dr (SB)</option>
+<option value="Sycamore Ln & Notre Dame Dr (SB)">Sycamore Ln & Notre Dame Dr (SB)</option>
+<option value="Sycamore Ln & Pepperwood Apts (NB)">Sycamore Ln & Pepperwood Apts (NB)</option>
+<option value="Sycamore Ln & Radcliffe Dr (NB)">Sycamore Ln & Radcliffe Dr (NB)</option>
+<option value="Sycamore Ln & University Mall (NB)">Sycamore Ln & University Mall (NB)</option>
+<option value="Sycamore Ln & Villanova Dr (NB)">Sycamore Ln & Villanova Dr (NB)</option>
+<option value="Sycamore Ln & Villanova Dr (SB)">Sycamore Ln & Villanova Dr (SB)</option>
+<option value="Sycamore Ln & Wake Forest Dr (SB)">Sycamore Ln & Wake Forest Dr (SB)</option>
+<option value="Temple Dr & Balsam Pl (EB)">Temple Dr & Balsam Pl (EB)</option>
+<option value="Temple Dr & Balsam Pl (WB)">Temple Dr & Balsam Pl (WB)</option>
+<option value="Tulip Ln & Cascade Pl (NB)">Tulip Ln & Cascade Pl (NB)</option>
+<option value="Tulip Ln & Cascade Pl (SB)">Tulip Ln & Cascade Pl (SB)</option>
+<option value="Villanova Dr & Anderson Rd (EB)">Villanova Dr & Anderson Rd (EB)</option>
+<option value="Villanova Dr & Reed Dr (WB)">Villanova Dr & Reed Dr (WB)</option>
+<option value="Wake Forest Dr & 1440 (Castillian) (EB)">Wake Forest Dr & 1440 (Castillian) (EB)</option>
+<option value="Wake Forest Dr & Oxford Cir (EB)">Wake Forest Dr & Oxford Cir (EB)</option>
+<option value="West Village Sq & Community College (SB)">West Village Sq & Community College (SB)</option>
+<option value="West Village Sq & Town Square (NB)">West Village Sq & Town Square (NB)</option>
+
+</select>
+
+
+<a class="btn btn-primary custom-close-reveal-modal" onclick="modalClose()">Submit</a>
+
+</div>
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+    $('#nav').ferroMenu({
+        drag: true,
+        position: 'left-center',
+        opened: true
+    });
+
+});
+
+
+var routesToRender = [];
+var stopsToRender = [];
+
+
+function toggleRoute(route){
+
+    var val = "#".concat(route);
+
+
+    var opacity = $(val).css("opacity");
+
+
+
+    if(opacity == "0.7"){
+        $(val).css({ opacity: 1.0 });
+
+
+        routesToRender = $.grep(routesToRender, function(value) {
+            return value != route;
+        });
+
+        routesToRender.push(route);
+
+    }
+    else{
+        $(val).css({ opacity: 0.7 });
+
+        routesToRender = $.grep(routesToRender, function(value) {
+            return value != route;
+        });
+    }
+}
+
+
+function modalClose(){
+    $('#myModal').trigger('reveal:close');
+
+
+    stopsToRender = [];
+
+    $('#routeSels :selected').each(function(i, selected){
+        stopsToRender[i] = $(selected).text();
+    });
+
+
+}
+
+
+
+
+var startT;
+
+var endT;
+
+$('#startTime').on('changeTime', function() {
+    startT = $(this).val();
+
+});
+
+$('#endTime').on('changeTime', function() {
+    endT = $(this).val();
+
+
+});
+
+
+
+
+$(".multiselect").multiselect();
+
+$("#slider").dateRangeSlider({
+    bounds:{
+        min: new Date(2012, 9, 1),
+        max: new Date(2012, 9, 31)
+    },
+    defaultValues:{
+        min: new Date(2012, 9, 1),
+        max: new Date(2012, 9, 31)
+    }
+});
+
+
+
+function updateVis(){
+
+
+    var bounds = $("#slider").dateRangeSlider("values");
+
+    var datesToRender = [bounds.min.getDate(), bounds.max.getDate()];
+
+
+    //Get checkbox values
+
+
+    var monday = [
+
+    '2012-10-01',
+
+    '2012-10-08',
+
+    '2012-10-15',
+
+    '2012-10-22',
+
+    '2012-10-29'
+
+    ];
+
+
+
+    var tuesday = [
+
+    '2012-10-02',
+
+    '2012-10-09',
+
+    '2012-10-16',
+
+    '2012-10-23',
+
+    '2012-10-30'
+
+    ]
+
+
+
+    var wednesday = [
+
+    '2012-10-03',
+
+    '2012-10-10',
+
+    '2012-10-17',
+
+    '2012-10-24',
+
+    '2012-10-31'
+
+    ]
+
+
+
+    var thursday = [
+
+    '2012-10-04',
+
+    '2012-10-11',
+
+    '2012-10-18',
+
+    '2012-10-25'
+
+    ]
+
+
+
+    var friday = [
+
+    '2012-10-05',
+
+    '2012-10-12',
+
+    '2012-10-19',
+
+    '2012-10-26'
+
+    ]
+
+
+
+    var saturday = [
+
+    '2012-10-06',
+
+    '2012-10-13',
+
+    '2012-10-20',
+
+    '2012-10-27'
+
+    ]
+
+
+
+    var sunday = [
+
+    '2012-10-07',
+
+    '2012-10-14',
+
+    '2012-10-21',
+
+    '2012-10-28'
+
+    ];
+
+
+
+    var daysToRender = [];
+
+    $("input[type='checkbox']:checked").each(
+
+        function() {
+            var id = $(this).attr("id");
+
+            if(id == "monday"){
+                daysToRender = daysToRender.concat(monday);
+
+            }
+            if(id == "tuesday"){
+                daysToRender = daysToRender.concat(tuesday);
+            }
+            if(id == "wednesday"){
+                daysToRender = daysToRender.concat(wednesday);
+            }
+            if(id == "thursday"){
+                daysToRender = daysToRender.concat(thursday);
+            }
+            if(id == "friday"){
+                daysToRender = daysToRender.concat(friday);
+            }
+            if(id == "saturday"){
+                daysToRender = daysToRender.concat(saturday);
+            }
+            if(id == "sunday"){
+                daysToRender = daysToRender.concat(sunday);
+            }
+
+        }
+
+    );
+
+
+
+
+    render(routesToRender,datesToRender, stopsToRender,startT,endT,daysToRender);
+
+}
+
+function render(stopT,datesToRender, stopsToRender,startT,endT, daysToRender){
+
+
+    // Set our margins
+    var margin = {
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 50
+            },
+            width = 650 - margin.left - margin.right,
+            height = 200 - margin.top - margin.bottom;
+
+    // Our X scale
+    var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1);
+
+    // Our Y scale
+    var y = d3.scale.linear()
+            .rangeRound([height, 0]);
+
+
+    // Use our X scale to set a bottom axis
+    var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+    // Same for our left axis
+    var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .tickFormat(d3.format(".2s"));
+
+    d3.selectAll("svg").remove();
+
+
+
+
+    var tip1 = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([0, 0])
+            .html(function(d) {
+                return "<strong>Date: </strong> <span style='color:crimson'>" + d.date + "</span>" + "<br>" + "<strong>Deboardings</strong> <span style='color:crimson'>" + d.deboardings + "</span>" + "<br>"  ;
+            })
+
+
+    var tip2 = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([0,0])
+            .html(function(d) {
+                return "<strong>Date: </strong> <span style='color:darkseagreen'>" + d.date + "</span>" + "<br>" + "<strong>Boardings</strong> <span style='color:darkseagreen'>" + d.boardings + "</span>" + "<br>"  ;
+            })
+
+
+
+
+
+    // Fetch data
+    var formatDate = d3.time.format("%Y-%m-%d").parse;
+    d3.csv("unitrans-oct-2011.csv", function (error, data) {
+
+
+
+        data.forEach(function (d) {
+            d.boarding = +d.boarding;
+            d.deboarding = -1*+d.deboarding;
+            d.datetime = formatDate(d.date);
+            d.dayOfMonth = d.datetime.getDate();
+            d.timeStop = d.time;
+
+        });
+
+
+
+        /*for checking time interval*/
+        var startTimeObj = {};
+        startTimeObj[0] = startT.substring(0,2);
+        startTimeObj[1] = startT.substring(3,5);
+        startTimeObj[2] = startT.substring(6,8);
+
+        var endTimeObj = {};
+        endTimeObj[0] = endT.substring(0,2);
+        endTimeObj[1] = endT.substring(3,5);
+        endTimeObj[2] = endT.substring(6,8);
+
+
+
+        /*Filtering for stops we want to render */
+        data = data.filter(function(d){  return  ($.inArray(d.stopTitle,stopsToRender) !== -1);   });
+        /*Filtering for dates we want to render */
+        data = data.filter(function(d){ return (datesToRender[0] <= d.dayOfMonth && d.dayOfMonth <= datesToRender[1]) });
+        /*Filtering for routes we want to render*/
+        data = data.filter(function(d){  return  ($.inArray(d.route,stopT) !== -1);   });
+
+        /*Filtering for days of the week we wish to render */
+        data = data.filter(function(d){  return  ($.inArray(d.date,daysToRender) !== -1);   });
+        /*Filtering for the time interval we wish to render*/
+        data = data.filter(function(d){
+
+
+            var curTimeObj = {};
+            curTimeObj[0] = d.timeStop.substring(0,2);
+            curTimeObj[1] = d.timeStop.substring(3,5);
+
+            return ( startTimeObj[0] <= curTimeObj[0] && curTimeObj[0] <= endTimeObj[0]);
+        });
+
+
+        /*Will keep track of total summation of boarding/deboarding*/
+        var nested2 = d3.nest()
+                .key(function(d){ return d.date; }).sortKeys(d3.ascending)  // `GROUP BY date`
+                .rollup(function(values){
+                    // `values` is all the rows of a particular date
+                    var counts = {}, keys = ['boarding', 'deboarding']
+                    keys.forEach(function(key){
+                        counts[key] = d3.sum(values, function(d){ return d[key] })
+                    })
+                    return counts
+                })
+                .entries(data)
+                .map(function(d){
+                    var date = d.key
+                    var boarding = d.values.boarding;
+                    var deboarding = d.values.deboarding;
+
+                    return {date:date, boardings:boarding, deboardings:deboarding }
+                });
+
+        /*Will group by routes and then by dates to get summation of boarings/deboardings*/
+        var nested = d3.nest()
+                .key(function(d){ return d.route; }).sortKeys(d3.ascending) // `GROUP BY route`
+                .key(function(d){ return d.date; }) // `GROUP BY date`
+                .rollup(function(values){
+                    // `values` is all the rows of a particular date
+                    var counts = {}, keys = ['boarding', 'deboarding']
+                    keys.forEach(function(key){
+                        counts[key] = d3.sum(values, function(d){ return d[key] })
+                    })
+                    return counts
+                })
+                .entries(data)
+                .map(function(d){
+                    var group = d.key
+                    var values = d.values.map(function(dd){
+                        var date = dd.key
+                        var boarding = dd.values.boarding;
+                        var deboarding = dd.values.deboarding;
+
+                        return {date:date, boardings:boarding, deboardings:deboarding }
+                    });
+                    return {'group':group, 'values':values}
+                });
+
+
+
+
+
+        /*Used for Axis*/
+        var scaleObj = {};
+
+        scaleObj["Total"] = nested2;
+
+        /*Re arranging of data for future use*/
+        var obj = {};
+        nested.forEach(function(d){
+            if( ($.inArray(d.group,stopT) !== -1)){
+                obj[d.group] = d.values;
+                obj[d.group].line = d.group;
+            }
+        });
+
+
+
+        /*Checking if "tot" option is selected for routes*/
+        if( ($.inArray("Tot",stopT) !== -1)){
+            obj["Tot"] = scaleObj.Total;
+            obj["Tot"].line = "Total";
+        }
+
+
+
+
+        var scale = scaleObj.Total;
+
+        //Rendering Bar View
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+
+                qData = obj[prop]
+
+                // Add our chart to the document id viz
+                var svg = d3.select("#viz").append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+                //Setting Tool tips for baording/deboarding
+                svg.call(tip1);
+
+                svg.call(tip2);
+
+                x.domain(scale.map(function(d) { return d.date; }));
+
+
+
+                y.domain([d3.min(qData, function(d) { return (d.deboardings); }), d3.max(qData, function(d) { return (d.boardings); })]);
+                //creating class for joined groups
+                var dateGroups = svg.selectAll("g").data(qData);
+
+                dateGroups.enter().append("g")
+                        .attr("class","dateGroup");
+
+
+                //within each group create a rectangle for each category
+
+                //For the bottom of the stack:
+                var bottom = dateGroups.append("rect")
+                        .attr("class", "data boarding")
+                        .on('mouseover', tip2.show)
+                        .on('mouseout', tip2.hide);;
+
+                bottom.attr("y", function(d){
+                    return y(0);
+                } )
+                        .attr("height", function(d){
+
+
+                            return  Math.abs(0);
+
+
+                        })
+                        .transition().delay(function(d,i){return i*100;})
+
+
+                        .attr("y", function(d){
+
+                            return y(d.boardings);
+
+
+
+                        } )
+
+                        .attr("height", function(d){
+                            return Math.abs( y(d.boardings) - y(0) );
+
+                        });
+
+
+
+
+
+                var top = dateGroups.append("rect")
+                        .attr("class", "data deboarding")
+                        .on('mouseover', tip1.show)
+                        .on('mouseout', tip1.hide);
+
+                top.attr("y", function(d){
+                    return y(0);
+                } )
+                        .attr("height", function(d){
+
+
+                            return  Math.abs(0);
+
+
+                        })
+                        .transition().transition().delay(function(d,i){return i*100;})
+                        .attr("y", function(d){
+                            return y(0);
+                        } )
+                        .attr("height", function(d){
+
+
+                            return  Math.abs(y(d.deboardings) - y(0) );
+
+
+                        });
+
+
+                dateGroups.selectAll("rect.data")
+                        .attr("x", function(d){
+
+                            return x(d.date);
+                        })
+                        .attr("width", x.rangeBand());
+
+
+                svg.append("text")
+                        .attr("x", (width / 2))
+                        .attr("text-anchor", "middle")
+                        .style("font-size", "14px")
+                        .text(qData.line);
+
+                svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + y(0)  + ")")
+                        .call(xAxis).selectAll("text").remove();
+
+                svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis)
+                        .append("text")
+                        .attr("transform", "rotate(-90)")
+                        .attr("y", 6)
+                        .attr("dy", ".71em")
+                        .style("text-anchor", "end").text("");
+
+
+            }
+        }
+
+
+    });
+
+}
+
+var allDays= [
+
+    '2012-10-01',
+
+    '2012-10-08',
+
+    '2012-10-15',
+
+    '2012-10-22',
+
+    '2012-10-29',
+
+    '2012-10-02',
+
+    '2012-10-09',
+
+    '2012-10-16',
+
+    '2012-10-23',
+
+    '2012-10-30',
+
+    '2012-10-03',
+
+    '2012-10-10',
+
+    '2012-10-17',
+
+    '2012-10-24',
+
+    '2012-10-31',
+
+    '2012-10-04',
+
+    '2012-10-11',
+
+    '2012-10-18',
+
+    '2012-10-25',
+
+    '2012-10-05',
+
+    '2012-10-12',
+
+    '2012-10-19',
+
+    '2012-10-26',
+
+    '2012-10-06',
+
+    '2012-10-13',
+
+    '2012-10-20',
+
+    '2012-10-27',
+
+    '2012-10-07',
+
+    '2012-10-14',
+
+    '2012-10-21',
+
+    '2012-10-28'
+
+];
+
+
+window.onload = render([""],[1,31], ["14th St & B St (EB)","14th St & Davis HS (WB)"],"07:00:00","24:00:00",allDays);
+
+</script>
+
+
+</body>
+</html>
